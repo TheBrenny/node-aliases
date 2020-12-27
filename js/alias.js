@@ -40,19 +40,19 @@ if (bossman.weight == 0) {
     for (let i = 0; i < bossman.weight; i++) {
         let alias = bossman.must.cabinet(i);
 
-        if (!fs.existsSync(aliasFolder + alias + ".cmd")) {
-            fs.writeFileSync(aliasFolder + alias + ".cmd", cmdContents);
-            fs.writeFileSync(aliasFolder + "js\\" + alias + ".js", `console.log("Hello, ${alias}");`);
+        if (!fs.existsSync(path.join(aliasFolder, alias + ".cmd"))) {
+            fs.writeFileSync(path.join(aliasFolder, alias + ".cmd"), cmdContents);
+            fs.writeFileSync(path.join(aliasFolder, "js", alias + ".js"), `console.log("Hello, ${alias}");`);
         }
 
-        items.push("js\\" + alias + ".js");
+        items.push(path.join(aliasFolder, "js", alias + ".js"));
     }
 
     zen(items);
 }
 
 function zen(items) {
-    items = (items || []).map(i => aliasFolder + i);
+    // items = (items || []).map(i => aliasFolder + i);
     items = [aliasFolder].concat(items).map(i => i.replace(" ", "\" \""));
     // console.table(items); // debugging
     spawn('"zen"', items, {

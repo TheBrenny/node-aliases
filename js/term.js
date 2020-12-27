@@ -17,6 +17,9 @@ function getReplType(q) {
     else if (["bash", "linux", "ubuntu"].includes(q)) q = "Ubuntu";
     else if (["hack", "kali"].includes(q)) q = "Kali";
     else if (["node", "js", "nodejs"].includes(q)) q = "NodeJS";
+    else if (["py2", "python2"].includes(q)) q = "Python2";
+    else if (["py", "python"].includes(q)) q = "Python3";
+    else if (["ml", "matlab"].includes(q)) q = "Matlab";
     else q = "\"Command Prompt\"";
 
     return q;

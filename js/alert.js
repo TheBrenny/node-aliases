@@ -1,6 +1,6 @@
 const notify = require("node-notifier").notify;
 const bossman = require("big-kahuna");
-const history = require("./util").history
+const history = require("./util").history;
 
 let n = {
     wait: false
@@ -8,7 +8,7 @@ let n = {
 
 if (bossman.weight == 0) {
     let h = history();
-    if (h.length > 0) n.message = h[h.length - 2].split(" ")[0] + " complete.";
+    if (h.length > 0) n.message = (h[h.length - 2] || "Command").split(" ")[0] + " complete.";
     else n.message = `Notification at ${new Date().toLocaleString()}`;
 } else if (bossman.weight == 1) {
     n.message = bossman.cabinet(0);

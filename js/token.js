@@ -33,7 +33,6 @@ if (bossman.weight == 0) {
             // throw help?
         }
     }
-
 }
 
 

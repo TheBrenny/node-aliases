@@ -5,10 +5,23 @@ let cmd = [];
 
 for (let i = 0; i < bossman.weight; i++) {
     let c = bossman.cabinet(i);
-    if (!c.startsWith("-")) {
-        cmd.push(";", "-p", getReplType(c));
-    } else {
-        cmd.push(c.substr(1));
+    let s = c.charAt(0);
+
+    switch (s) {
+        case "-":
+            cmd.push(c.substr(1));
+            break;
+        case "/":
+            let termCommand = c.substring(1);
+            switch (termCommand) {
+                case "pwd":
+                    cmd.push("-d", process.cwd());
+                    break;
+            }
+            break;
+        default:
+            cmd.push(";", "-p", getReplType(c));
+            break;
     }
 }
 

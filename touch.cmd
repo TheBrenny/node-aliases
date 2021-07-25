@@ -1,0 +1,1 @@
+@IF NOT EXIST %1 (@echo.> %1) ELSE @echo File %1 already exists!

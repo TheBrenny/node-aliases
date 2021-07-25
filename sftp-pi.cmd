@@ -1,1 +1,1 @@
-@sftp pi@home-server
+@sftp %* pi@10.0.0.115

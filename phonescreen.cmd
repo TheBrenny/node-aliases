@@ -1,0 +1,1 @@
+@"C:\Program Files\scrcpy\scrcpy-noconsole.vbs" --window-x 1400 --window-y 500 --window-width 300 --window-height 600 --window-title "My Phone" --show-touches %*

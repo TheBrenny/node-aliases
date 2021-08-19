@@ -25,6 +25,10 @@ for (let i = 0; i < bossman.weight; i++) {
     }
 }
 
+if(bossman.weight == 0) {
+    cmd.push("")
+}
+
 execWT();
 
 function getReplType(q) {
@@ -32,6 +36,7 @@ function getReplType(q) {
     else if (["bash", "linux", "ubuntu"].includes(q)) q = "Ubuntu";
     else if (["hack", "kali"].includes(q)) q = "Kali";
     else if (["node", "js", "nodejs"].includes(q)) q = "NodeJS";
+    else if (["nodei", "jsi", "nodejsi", "inspect"].includes(q)) q = "NodeJS Inspector";
     else if (["py2", "python2"].includes(q)) q = "Python2";
     else if (["py", "python"].includes(q)) q = "Python3";
     else if (["ml", "matlab"].includes(q)) q = "Matlab";

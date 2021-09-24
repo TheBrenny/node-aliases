@@ -6,8 +6,13 @@ const out = {
     "pop": ["[].pop", "remove from end"],
     "unshift": ["[].unshift", "add to start"],
     "shift": ["[].shift", "remove from start"],
+    "includes": ["[].includes", "checks if array contains item"],
+    "contains": ["cl.contains", "checks if DOM class list contains item"],
     "loopObj": ["for...in", "loop property names in objects"],
     "loopArr": ["for...of", "loop elements in array"],
+    "fn.apply": ["fn.apply()", "binds with an array of args"],
+    "fn.bind": ["fn.bind()", "binds with a spread of args"],
+    "fn.call": ["fn.call()", "executes with a spread of args"]
 };
 
 const maxSize = Object.values(out).reduce((a, c) => Math.max(a, c[0].length), 0);

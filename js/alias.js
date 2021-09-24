@@ -25,7 +25,7 @@ const cmdContents = [
 if (bossman.weight == 0) {
     console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
     zen([]);
-} else if (bossman.has('-a', '--all')) {
+} else if (bossman.has('-a', '--all', '-l', '--list', '--ls')) {
     exec("dir /b \"" + aliasFolder + "\"", (err, stdout, stderr) => {
         if (err) {
             console.log(stderr);

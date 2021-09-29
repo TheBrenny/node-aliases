@@ -9,4 +9,4 @@ module.exports.sleep = function (ms) {
 module.exports.history = function () {
     let dk = cp.spawnSync("doskey", ["/history"]);
     return dk.stdout.toString().replace(/\n/g, '').split('\r').filter(v => v.trim() != "") || [];
-    };
+};

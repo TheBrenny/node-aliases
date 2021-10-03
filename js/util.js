@@ -1,4 +1,5 @@
-let cp = require("child_process");
+const readline = require("readline");
+const shellHist = import("shell-history");
 
 module.exports.sleep = function (ms) {
     return new Promise((resolve) => {
@@ -6,7 +7,27 @@ module.exports.sleep = function (ms) {
     });
 };
 
-module.exports.history = function () {
-    let dk = cp.spawnSync("doskey", ["/history"]);
-    return dk.stdout.toString().replace(/\n/g, '').split('\r').filter(v => v.trim() != "") || [];
+module.exports.history = function (count) {
+    count = count ?? 1;
+    return shellHist.then(shellHist => Array.from(shellHist.shellHistory()).filter(h => !h.startsWith("|")).reverse().slice(0, count));
 };
+
+module.exports.tail = function (file, maxLines) {
+    return new Promise((resolve, reject) => {
+        maxLines = maxLines ?? 300;
+        let stream = fs.createReadStream(file);
+
+        const rl = readline.createInterface({
+            input: stream,
+            crlfDelay: Infinity
+        });
+
+        let lines = [];
+        rl.on("line", (l) => {
+            lines.shift(l);
+            lines.splice(maxLines, Infinity);
+        });
+        rl.on("close", () => resolve(lines));
+        rl.on("error", (e) => reject(e));
+    });
+}

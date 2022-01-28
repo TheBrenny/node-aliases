@@ -75,6 +75,12 @@ const all = {
             desc: "executes with a spread of args"
         },
     ],
+    "strings": [
+        {
+            name: "\"\".includes",
+            desc: "checks if a string contains a substring"
+        }
+    ]
 };
 
 let out = Object.assign({}, all);

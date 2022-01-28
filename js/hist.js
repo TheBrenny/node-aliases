@@ -4,11 +4,11 @@
 
     const shellHist = require("./util").history;
     let res = [];
-    let count = 200;
+    let count = 20;
 
     if (process.argv.length > 2) {
         let search = process.argv[2];
-        let count = process.argv?.[3] ?? count;
+        count = process.argv?.[3] ?? count;
 
         let regexMatch = search.match(/^\/(.*)\/([gimsuy]*)$/);
         if (regexMatch) {
@@ -17,9 +17,8 @@
             search = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "g");
         }
 
-        res = (await shellHist(count)).reverse().filter(cmd => search.test(cmd)).map(cmd => cmd.replace(search, green + "$&" + normal));
+        res = (await shellHist(count)).reverse().filter(cmd => search.test(cmd)).map(cmd => cmd.replace(search, green + "$&" + normal)).slice(0,count);
     } else {
-        count = 20;
         res = (await shellHist(count)).reverse();
     }
 

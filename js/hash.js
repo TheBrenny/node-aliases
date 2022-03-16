@@ -100,7 +100,19 @@ const yargs = require("yargs")
                 alias: "a",
                 default: "sha256",
                 desc: "The hashing algorithm to use",
-                describe: ""
+            },
+            "individual": {
+                alias: "i",
+                default: false,
+                desc: "Hash individual file entries in a directory",
+                boolean: true
+            },
+            "recursive": {
+                alias: "r",
+                default: false,
+                desc: "Recurse folders when hashing individual entries",
+                boolean: true,
+                demandOption: "individual"
             },
         }).positional("target", {
             demandOption: "You must specify a target dir or file",
@@ -112,15 +124,51 @@ const yargs = require("yargs")
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const { basename } = require("path");
 
 (async () => {
-    console.log(
-        await hashFiles(
-            yargs.target.map((t) => listFilesRecurse(t)).flat(100).sort(),
-            yargs.algorithm
+    if (yargs.individual) {
+        const SPACE_PADDING = 2;
+        let files = [];
+        if (yargs.recursive) files = yargs.target.map((t) => listFilesRecurse(t)).flat(100);
+        else files = yargs.target.map((t) => listFiles(t)).flat(100);
+        files = files.sort();
+        let proms = files.map((f) => hashFiles([f], yargs.algorithm));
+        let nameSize = files.reduce((v, c) => Math.max(v, path.basename(c).length), 0);
+        nameSize = Math.max("Name:".length, nameSize);
+        const finalNameSize = nameSize + SPACE_PADDING;
+        let hashes = await Promise.all(proms);
+        console.log("Name:".padEnd(finalNameSize, " ") + "Hash:");
+        for (let i = 0; i < hashes.length; i++) {
+            console.log(path.basename(files[i]).padEnd(finalNameSize, " ") + hashes[i])
+        }
+    } else {
+        console.log(
+            await hashFiles(
+                yargs.target.map((t) => listFilesRecurse(t)).flat(100).sort(),
+                yargs.algorithm
+            )
         )
-    )
+    }
 })();
+
+function listFiles(dir, files) {
+    files = files ?? [];
+
+    let stat = fs.statSync(dir);
+    if (stat.isDirectory()) {
+        let curDir = fs.readdirSync(dir)
+        for (let d of curDir) {
+            let p = path.join(dir, d);
+            let s = fs.statSync(p);
+            if(!s.isDirectory()) files.push(p);
+        }
+    } else if (stat.isFile()) {
+        files.push(dir);
+    }
+
+    return files;
+}
 
 function listFilesRecurse(dir, files) {
     files = files ?? [];
@@ -141,13 +189,14 @@ function listFilesRecurse(dir, files) {
 // File list should be sorted in an predictable way!
 async function hashFiles(fileList, algorithm) {
     let hex = crypto.createHash(algorithm);
-
+    
     let prom;
     for (let f of fileList) {
         prom = new Promise((res, rej) => {
             let stream = fs.createReadStream(f);
             stream.pipe(hex, { end: false });
             stream.on("error", (e) => {
+                console.error("Error on file " + f);
                 console.error(e);
                 rej(e);
             });

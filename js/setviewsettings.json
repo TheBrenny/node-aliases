@@ -1,0 +1,10 @@
+{
+    "laptop": {
+        "input": "18",
+        "color": "0"
+    },
+    "xbox": {
+        "input": "17",
+        "color": "1"
+    }
+}

@@ -80,6 +80,12 @@ const all = {
             name: "\"\".includes",
             desc: "checks if a string contains a substring"
         }
+    ],
+    "node": [
+        {
+            name: "require.main === module",
+            desc: "determines if this is called from CMD (not required)"
+        }
     ]
 };
 

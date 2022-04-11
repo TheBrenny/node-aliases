@@ -51,6 +51,12 @@ const all = {
             desc: "checks if DOM class list contains item"
         }
     ],
+    "array.comprehension": [
+        {
+            name: "[...Array(x).keys()]",
+            desc: "creates an array of numbers from 0 to x"
+        }
+    ],
     "loops": [
         {
             name: "for...in",
@@ -108,16 +114,25 @@ if (process.argv.length > 2) {
     }
 }
 
-const maxSize = Object.values(out) // => array of arrays of objs
+let maxSize = Object.values(out) // => array of arrays of objs
     .reduce((a, c) => a.concat(c), []) // => 1d array of objs
     .map((obj) => obj.name) // => 1d array of strings
     .reduce((a, c) => Math.max(a, c.length), 0); // => longest string
 
 console.log();
-Object.keys(out).forEach(e => {
-    console.log(color(green, bold, underline) + e + color());
-    out[e].forEach((l) => console.log("    " + color(green) + l.name.padEnd(maxSize, " ") + color() + "  --  " + l.desc));
-});
+if (Object.keys(out).length > 0) {
+    Object.keys(out).forEach(e => {
+        console.log(color(green, bold, underline) + e + color());
+        out[e].forEach((l) => console.log("    " + color(green) + l.name.padEnd(maxSize, " ") + color() + "  --  " + l.desc));
+    });
+} else {
+    maxSize = Object.keys(all).reduce((a, c) => Math.max(a, c.length), 0);
+    console.log("Hmm... It seems that jsuck jsucks...");
+    console.log("Here are the categories:");
+    Object.keys(all).forEach(e => {
+        console.log("    " + color(green) + e.padEnd(maxSize, " ") + color() + "  --  " + all[e].length);
+    });
+}
 
 console.log();
 console.log("Don't even try to remember these...")

@@ -16,7 +16,6 @@ if (args.length === 0) {
     console.log("")
     console.log("    Converts words into phone numbers. Add as many words as you want!")
     process.exit(1);
-    return;
 }
 
 let ret = {};

@@ -17,4 +17,5 @@ if (bossman.weight == 0) {
     n.message = bossman.cabinet(1);
 }
 
+console.log(n);
 notify(n);

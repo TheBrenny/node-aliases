@@ -1,0 +1,1 @@
+@inkscape --export-type=png -C --export-png-color-mode=RGBA_16 %*

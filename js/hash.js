@@ -127,21 +127,17 @@ const crypto = require("crypto");
 const { basename } = require("path");
 
 (async () => {
+    console.log("Using algorithm: " + yargs.algorithm);
     if (yargs.individual) {
         const SPACE_PADDING = 2;
         let files = [];
         if (yargs.recursive) files = yargs.target.map((t) => listFilesRecurse(t)).flat(100);
         else files = yargs.target.map((t) => listFiles(t)).flat(100);
         files = files.sort();
-        let proms = files.map((f) => hashFiles([f], yargs.algorithm));
-        let nameSize = files.reduce((v, c) => Math.max(v, path.basename(c).length), 0);
-        nameSize = Math.max("Name:".length, nameSize);
-        const finalNameSize = nameSize + SPACE_PADDING;
-        let hashes = await Promise.all(proms);
-        console.log("Name:".padEnd(finalNameSize, " ") + "Hash:");
-        for (let i = 0; i < hashes.length; i++) {
-            console.log(path.basename(files[i]).padEnd(finalNameSize, " ") + hashes[i])
-        }
+        console.log("Files found: " + files.length);
+
+        let proms = files.map((f) => hashFiles([f], yargs.algorithm).then(h => [f, h]));
+        proms = proms.map(p => p.then(([f, h]) => console.log(path.basename(f) + ":\n    " + h)));
     } else {
         console.log(
             await hashFiles(
@@ -161,7 +157,7 @@ function listFiles(dir, files) {
         for (let d of curDir) {
             let p = path.join(dir, d);
             let s = fs.statSync(p);
-            if(!s.isDirectory()) files.push(p);
+            if (!s.isDirectory()) files.push(p);
         }
     } else if (stat.isFile()) {
         files.push(dir);
@@ -189,7 +185,7 @@ function listFilesRecurse(dir, files) {
 // File list should be sorted in an predictable way!
 async function hashFiles(fileList, algorithm) {
     let hex = crypto.createHash(algorithm);
-    
+
     let prom;
     for (let f of fileList) {
         prom = new Promise((res, rej) => {

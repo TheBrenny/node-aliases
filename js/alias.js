@@ -40,12 +40,17 @@ if (bossman.weight == 0) {
     for (let i = 0; i < bossman.weight; i++) {
         let alias = bossman.must.cabinet(i);
 
-        if (!fs.existsSync(path.join(aliasFolder, alias + ".cmd"))) {
+        // if the cmd exists and the js exists, just open the js
+        if (fs.existsSync(path.join(aliasFolder, alias + ".cmd"))) {
+            if (fs.existsSync(path.join(aliasFolder, alias + ".js"))) items.push(path.join(aliasFolder, "js", alias + ".js"));
+            else items.push(path.join(aliasFolder, alias + ".cmd"));
+        } else if (fs.existsSync(path.join(aliasFolder, alias + ".ps1"))) {
+            items.push(path.join(aliasFolder, alias + ".ps1"));
+        } else {
             fs.writeFileSync(path.join(aliasFolder, alias + ".cmd"), cmdContents);
             fs.writeFileSync(path.join(aliasFolder, "js", alias + ".js"), `console.log("Hello, ${alias}");`);
+            items.push(path.join(aliasFolder, "js", alias + ".js"));
         }
-
-        items.push(path.join(aliasFolder, "js", alias + ".js"));
     }
 
     zen(items);

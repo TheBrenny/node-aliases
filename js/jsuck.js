@@ -70,7 +70,7 @@ const all = {
     "functions": [
         {
             name: "fn.apply()",
-            desc: "binds with an array of args"
+            desc: "executes with an array of args"
         },
         {
             name: "fn.bind()",

@@ -40,16 +40,20 @@ if (bossman.weight == 0) {
     for (let i = 0; i < bossman.weight; i++) {
         let alias = bossman.must.cabinet(i);
 
+        const cmdLoc = path.join(aliasFolder, alias + ".cmd");
+        const jsLoc = path.join(aliasFolder, "js", alias + ".js");
+        const psLoc = path.join(aliasFolder, alias + ".ps1")
+
         // if the cmd exists and the js exists, just open the js
-        if (fs.existsSync(path.join(aliasFolder, alias + ".cmd"))) {
-            if (fs.existsSync(path.join(aliasFolder, alias + ".js"))) items.push(path.join(aliasFolder, "js", alias + ".js"));
-            else items.push(path.join(aliasFolder, alias + ".cmd"));
-        } else if (fs.existsSync(path.join(aliasFolder, alias + ".ps1"))) {
-            items.push(path.join(aliasFolder, alias + ".ps1"));
+        if (fs.existsSync(cmdLoc)) {
+            if (fs.existsSync(jsLoc)) items.push(jsLoc);
+            else items.push(cmdLoc);
+        } else if (fs.existsSync(psLoc)) {
+            items.push(psLoc);
         } else {
-            fs.writeFileSync(path.join(aliasFolder, alias + ".cmd"), cmdContents);
-            fs.writeFileSync(path.join(aliasFolder, "js", alias + ".js"), `console.log("Hello, ${alias}");`);
-            items.push(path.join(aliasFolder, "js", alias + ".js"));
+            fs.writeFileSync(cmdLoc, cmdContents);
+            fs.writeFileSync(jsLoc, `console.log("Hello, ${alias}");`);
+            items.push(jsLoc);
         }
     }
 

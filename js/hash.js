@@ -94,7 +94,7 @@ const hashAlgorithms = [
 const yargs = require("yargs")
     .scriptName("hash")
     .showHelpOnFail(true)
-    .command("$0 [options] <target..>", "Generate a hash a target file or directory", (y) => {
+    .command("$0 [options] <targets..>", "Hash the target files, directories, or strings", (y) => {
         y.options({
             "algorithm": {
                 alias: "a",
@@ -103,18 +103,31 @@ const yargs = require("yargs")
             },
             "individual": {
                 alias: "i",
-                default: false,
-                desc: "Hash individual file entries in a directory",
-                boolean: true
+                // default: false,
+                desc: "Hash individual file entries in a directory, or each string passed",
+                boolean: true,
+                conflicts: ["string"]
             },
-            "recursive": {
+            "recursive": { // only valid if "individual" is present
                 alias: "r",
-                default: false,
+                // default: false,
                 desc: "Recurse folders when hashing individual entries",
                 boolean: true,
-                demandOption: "individual"
+                implies: ["individual"],
             },
-        }).positional("target", {
+            "string": {
+                alias: "s",
+                desc: "Treat the targets strings and hash them",
+                boolean: true,
+                conflicts: ["individual"],
+            },
+            "concatenate": { // only valid if "string" is present
+                alias: "c",
+                desc: "Concatenates the input strings as one whole input string",
+                boolean: true,
+                implies: ["string"],
+            }
+        }).positional("targets", {
             demandOption: "You must specify a target dir or file",
             desc: "The target file or folder to hash",
             array: true
@@ -128,11 +141,16 @@ const { basename } = require("path");
 
 (async () => {
     console.log("Using algorithm: " + yargs.algorithm);
-    if (yargs.individual) {
+    if (yargs.string) {
+        let input = yargs.individual ? yargs.targets : [yargs.targets.reduce((a, c) => a + c)];
+        (await hashStrings(input, yargs.algorithm)).forEach((hash, idx) => {
+            console.log(`${hash} <= ${input[idx]}`);
+        })
+    } else if (yargs.individual) {
         const SPACE_PADDING = 2;
         let files = [];
-        if (yargs.recursive) files = yargs.target.map((t) => listFilesRecurse(t)).flat(100);
-        else files = yargs.target.map((t) => listFiles(t)).flat(100);
+        if (yargs.recursive) files = yargs.targets.map((t) => listFilesRecurse(t)).flat(100);
+        else files = yargs.targets.map((t) => listFiles(t)).flat(100);
         files = files.sort();
         console.log("Files found: " + files.length);
 
@@ -141,7 +159,7 @@ const { basename } = require("path");
     } else {
         console.log(
             await hashFiles(
-                yargs.target.map((t) => listFilesRecurse(t)).flat(100).sort(),
+                yargs.targets.map((t) => listFilesRecurse(t)).flat(100).sort(),
                 yargs.algorithm
             )
         )
@@ -206,4 +224,19 @@ async function hashFiles(fileList, algorithm) {
     }
 
     return hex.digest("hex");
+}
+
+async function hashStrings(strings, algorithm) {
+    let hex = crypto.createHash(algorithm);
+
+    let proms = [];
+    for (let s of strings) {
+        let p = new Promise((res, rej) => {
+            if (!hex.push(s)) rej(`Something went wrong hashing: '${s}'`)
+            res(hex.digest("hex"));
+        });
+        proms.push(p);
+    }
+
+    return await Promise.all(proms);
 }

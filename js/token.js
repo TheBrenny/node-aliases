@@ -30,7 +30,9 @@ if (bossman.has("--help", "-h")) {
         "    -h",
         "          Displays this help message",
     ];
-    usage.forEach(console.log);
+    usage.forEach((l) => console.log(l));
+    console.log();
+    process.exit(0);
 }
 
 let result = "";

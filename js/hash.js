@@ -232,7 +232,7 @@ async function hashStrings(strings, algorithm) {
     let proms = [];
     for (let s of strings) {
         let p = new Promise((res, rej) => {
-            if (!hex.push(s)) rej(`Something went wrong hashing: '${s}'`)
+            if (!hex.update(s)) rej(`Something went wrong hashing: '${s}'`)
             res(hex.digest("hex"));
         });
         proms.push(p);

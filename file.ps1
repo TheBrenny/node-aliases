@@ -1,10 +1,3 @@
 $a = @()
-
-foreach ($aa in $args) {
-    $aa = $aa -replace "\\", "/"
-    $m = ($aa -match "(.):/")
-    if ($m) { $aa = $aa -replace ".:/", "/mnt/$($Matches[1].ToLower())/" }
-    $a += $aa
-}
-
+foreach ($aa in $args) { $a += (wintolinpath.ps1 $aa) }
 wsl.exe file $a

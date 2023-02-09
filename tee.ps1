@@ -1,1 +1,1 @@
-Tee-Object -FilePath 
+Tee-Object -FilePath $args

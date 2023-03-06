@@ -63,12 +63,12 @@ if (bossman.weight == 0) {
 function zen(items) {
     // items = (items || []).map(i => aliasFolder + i);
     items = [aliasFolder].concat(items).map(i => i.replace(" ", "\" \""));
+    
+    const zenLoc = path.join(aliasFolder, "zen.ps1");
+    items.unshift("pwsh", "-WindowStyle", "Hidden", zenLoc);
+
     // console.table(items); // debugging
-    spawn('"zen"', items, {
-        detached: true,
-        stdio: "ignore",
-        shell: true
-    }).unref();
+    exec(items.map(e => `"${e}"`).join(" "));
 }
 
 function printHelp() {

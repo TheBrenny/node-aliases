@@ -1,0 +1,1 @@
+@node.exe --trace-deprecation --trace-warnings --experimental-fetch --experimental-repl-await -r "C:/Users/TheBrenny/MySpace/Util/nodeterm/nodeterm.js" -i

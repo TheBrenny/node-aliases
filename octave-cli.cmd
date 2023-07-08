@@ -1,1 +1,0 @@
-@"C:\lang\octave\Octave-6.1.0\mingw64\bin\octave" --no-gui %*

@@ -1,28 +1,18 @@
-const {
-    exec
-} = require('child_process');
 const bossman = require('big-kahuna').dashCare(true);
 const fs = require('fs');
 const path = require('path');
+const {shimFolder, aliasFolder} = require("./lib/const")
+const zen = require("./lib/zen");
 
-const shimFolder = process.env.ShimFolder || path.normalize("C:\\bin\\");
-const cmdContents = [
-    "path = node",
-    "args = ",
-].join("\n");
-
-if (bossman.weight == 0) {
-    console.log(`Opening [${shimFolder}] folder in 'zen'...`);
-    zen([]);
-} else if (bossman.has('-a', '--all', '-l', '--list', '--ls')) {
-    exec("dir /b \"" + shimFolder + "*.shim\"", (err, stdout, stderr) => {
-        if (err) {
-            console.log(stderr);
-            process.exit(parseInt(err) || 1);
-        } else console.log(stdout);
-    });
-} else if (bossman.has("-h", "--help", "-?")) {
+if (bossman.weight == 0 || bossman.has("-h", "--help", "-?")) {
     printHelp();
+} else if (bossman.has('-a', '--all', '-l', '--list', '--ls')) {
+    console.log(
+        fs.readdirSync(shimFolder)
+            .filter((v) => v.endsWith(".shim"))
+            .map((v) => v.split(".")[0])
+            .join("\n")
+    );
 } else if (bossman.weight >= 1) {
     let shim = bossman.must.cabinet(0);
 
@@ -33,31 +23,23 @@ if (bossman.weight == 0) {
     if (!fs.existsSync(shimLoc)) {
         fs.copyFileSync(path.join(__dirname, "res", "shim.exe"), exeLoc)
         fs.writeFileSync(shimLoc, makeShim(bossman.cabinet()));
+        console.log(`Shim made at: ${exeLoc}}`);
+    } else {
+        zen(shimLoc);
     }
-
-    zen([shimLoc]);
-}
-
-function zen(items) {
-    // items = (items || []).map(i => shimFolder + i);
-    items = [shimFolder].concat(items).map(i => i.replace(" ", "\" \""));
-
-    const zenLoc = path.join(shimFolder, "zen.ps1");
-    items.unshift("pwsh", "-WindowStyle", "Hidden", zenLoc);
-
-    // console.table(items); // debugging
-    exec(items.map(e => `"${e}"`).join(" "));
 }
 
 function makeShim(args) {
-    let [name, exe, exeArgs] = [...args, "", "", ""].slice(0, 3); // Ensure we get an array of length 3
+    let [name, exe, ...exeArgs] = Array.from(args).concat(["", "", ""]); // Must have 3 args here
+    exeArgs = exeArgs.filter((v) => v.length > 0).join(" "); // filter out the empties and make it a string
     return `path = "${exe}"\nargs = ${exeArgs}`;
 }
 
 function printHelp() {
     let out = [
         "",
-        "   Saves shims to the registered shim folder!",
+        "   Saves shims to the registered shim folder! Shims are wrapper executables that",
+        "   effectively allow symlinking",
         "",
         "   Usage:",
         "    - shim",
@@ -83,5 +65,5 @@ function printHelp() {
         "      " + shimFolder,
         ""
     ];
-    out.forEach(o => console.log(o));
+    console.log(out.join("\n"));
 }

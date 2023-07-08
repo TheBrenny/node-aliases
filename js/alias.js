@@ -1,10 +1,7 @@
-const {
-    spawn,
-    exec
-} = require('child_process');
 const bossman = require('big-kahuna').dashCare(true);
 const fs = require('fs');
 const path = require('path');
+const zen = require("./lib/zen");
 
 const aliasFolder = process.env.AliasFolder || path.join(process.env.USERPROFILE, ".aliases");
 const cmdContents = [
@@ -21,19 +18,22 @@ const cmdContents = [
     'ENDLOCAL',
     'EXIT /b %errorlevel%',
 ].join("\n");
+const descriptorFile = path.join(aliasFolder, "js", "res", "descriptors.json");
 
 if (bossman.weight == 0) {
     console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
     zen([]);
 } else if (bossman.has('-a', '--all', '-l', '--list', '--ls')) {
-    exec("dir /b \"" + aliasFolder + "\"", (err, stdout, stderr) => {
-        if (err) {
-            console.log(stderr);
-            exit(err);
-        } else console.log(stdout);
-    });
+    let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
+    let maxName = Object.keys(descriptors).reduce((a, c) => Math.max(a, c.length), 0);
+    for(let d of Object.entries(descriptors).sort()) {
+        console.log(d[0].padStart(maxName) + ": " + d[1]);
+    }
 } else if (bossman.has("-h", "--help", "-?")) {
     printHelp();
+} else if (bossman.has("-d", "--descriptors")) {
+    console.log(`Opening [${descriptorFile}] in 'zen'...`);
+    zen([descriptorFile]);
 } else if (bossman.weight >= 1) {
     let items = [];
 
@@ -54,21 +54,14 @@ if (bossman.weight == 0) {
             fs.writeFileSync(cmdLoc, cmdContents);
             fs.writeFileSync(jsLoc, `console.log("Hello, ${alias}");`);
             items.push(jsLoc);
+
+            let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
+            descriptors[alias] = descriptors[alias] ?? "\x1b[31m ----- NO DESCRIPTION GIVEN! -----\x1b[0m";
+            fs.writeFileSync(descriptorFile, JSON.stringify(descriptors, null, 4));
         }
     }
 
     zen(items);
-}
-
-function zen(items) {
-    // items = (items || []).map(i => aliasFolder + i);
-    items = [aliasFolder].concat(items).map(i => i.replace(" ", "\" \""));
-    
-    const zenLoc = path.join(aliasFolder, "zen.ps1");
-    items.unshift("pwsh", "-WindowStyle", "Hidden", zenLoc);
-
-    // console.table(items); // debugging
-    exec(items.map(e => `"${e}"`).join(" "));
 }
 
 function printHelp() {
@@ -89,7 +82,11 @@ function printHelp() {
         "",
         "    - alias -a",
         "    - alias --all",
-        "            Lists all alias files in the alias directory.",
+        "            Lists all aliases and their descriptions.",
+        "",
+        "    - alias -d",
+        "    - alias --descriptors",
+        "            Opens the descriptor file for modifications.",
         "",
         "    - alias -h",
         "    - alias -?",
@@ -101,5 +98,5 @@ function printHelp() {
         "      " + aliasFolder,
         ""
     ];
-    out.forEach(o => console.log(o));
+    console.log(out.join("\n"));
 }

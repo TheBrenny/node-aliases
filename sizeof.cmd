@@ -1,3 +1,4 @@
+::nodeshim
 @ECHO off
 SETLOCAL
 

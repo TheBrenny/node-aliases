@@ -1,0 +1,8 @@
+# Renamed to calias (code alias) because it clashes with the native alias command.
+
+curdir=`dirname "$0"`
+fileCalled="${0%.*}"
+
+node "$curdir/js/alias.js" $@
+
+exit $?

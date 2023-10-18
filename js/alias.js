@@ -32,6 +32,8 @@ function getNodeShims() {
     let filePath;
     let fd;
     for (let file of dir) {
+        buffer.fill(0);
+        
         filePath = path.join(aliasFolder, file);
 
         if (!fs.lstatSync(filePath).isFile()) continue;

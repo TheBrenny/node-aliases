@@ -1,6 +1,8 @@
+#!/bin/bash
 ##nodeshim
 curdir=`dirname "$0"`
-fileCalled="${0}"
+fileCalled="${0##?*/}"
+fileCalled="${fileCalled%.?*}"
 
 node "$curdir/js/$fileCalled.js" $@
 

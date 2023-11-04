@@ -7,23 +7,22 @@ on:
 
 jobs:
   convert:
+    name: Convert and Push
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: pnpm/action-setup@v2
       with:
         version: 8
+        run_install: true
     - uses: actions/setup-node@v4
       with:
         node-version: 20.x
-        cache: pnpm
-        run_install: true
     - run: ./calias switch --mode lin
       env:
-        AliasFolder: $github_workspace
+        AliasFolder: ${{ github.workspace }}
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: converted to linux
         branch: linux
-        status_options: '--untracked-files=yes'
         add_options: '--all'

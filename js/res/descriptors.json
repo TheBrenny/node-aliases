@@ -52,5 +52,7 @@
     "wsadb": "Connects the WSA Android instance with ADB",
     "yarn": "Alias to 'npx yarn'",
     "zen": "Opens the VSCode Zen profile (minimal VSCode)",
-    "ln": "Alias to 'mklink'"
+    "ln": "Alias to 'mklink'",
+    "explore": "Opens the Windows Explorer",
+    "initnode": "Alias to 'mknode'"
 }

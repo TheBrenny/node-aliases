@@ -25,7 +25,13 @@ const pwd = process.cwd();
 const packageLoc = path.resolve(pwd, "package.json");
 const readmeLoc = path.resolve(pwd, "readme.md");
 
-(async () => {
+module.exports = (async () => {
+    if(process.argv.includes("--help") || process.argv.includes("-h") || process.argv.includes("help")) {
+        process.stdout.write("mknode [pnpm]\n");
+        process.stdout.write("       ^- Use pnpm instead of npm\n");
+        process.exit(0);
+    }
+
     // exec funcs and get input
     process.stdout.write(`\x1b[36m[git]\x1b[0m `)
     let gitInit = execSync("git init", { stdio: "pipe" });
@@ -36,7 +42,9 @@ const readmeLoc = path.resolve(pwd, "readme.md");
     process.stdout.write(`${gitignore.toLocaleString().trim()}\n`);
     
     process.stdout.write(`\x1b[31m[npm]\x1b[0m `);
-    let npmInit = execSync("npm init -y", { stdio: "ignore" });
+    let npm = "npm init -y";
+    if(process.argv.includes("pnpm")) npm = "pnpm init";
+    let npmInit = execSync(npm, { stdio: "ignore" });
     process.stdout.write(`Wrote package to ${packageLoc}.\n\n`);
 
     let package = require(path.resolve(pwd, "package.json"));

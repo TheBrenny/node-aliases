@@ -8,9 +8,6 @@ on:
 jobs:
   convert:
     runs-on: ubuntu-latest
-    env:
-      CI_COMMIT_AUTHOR: _BrennyBot
-      CI_COMMIT_MESSAGE: 
     steps:
     - uses: actions/checkout@v4
     - uses: pnpm/action-setup@v2
@@ -22,6 +19,8 @@ jobs:
         cache: pnpm
         run_install: true
     - run: ./calias switch --mode lin
+      env:
+        AliasFolder: $github_workspace
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: converted to linux

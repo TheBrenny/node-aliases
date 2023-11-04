@@ -1,0 +1,30 @@
+name: Convert to Linux
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    env:
+      CI_COMMIT_AUTHOR: _BrennyBot
+      CI_COMMIT_MESSAGE: 
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: pnpm
+        run_install: true
+    - run: ./calias switch --mode lin
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: converted to linux
+        branch: linux
+        status_options: '--untracked-files=yes'
+        add_options: '--all'

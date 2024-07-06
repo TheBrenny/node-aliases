@@ -85,6 +85,10 @@ const all = {
         {
             name: "\"\".includes",
             desc: "checks if a string contains a substring"
+        },
+        {
+            name: "\"1234567\".slice(1, -1)",
+            desc: "wraps negative values: \"23456\""
         }
     ],
     "node": [

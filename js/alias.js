@@ -6,11 +6,11 @@ const git = require('./lib/git');
 
 const IS_WIN = process.platform === 'win32';
 
-const cmdContents = [
-    fs.readFileSync(path.join(aliasFolder, "js", "res", ".windows.shim")),
-    fs.readFileSync(path.join(aliasFolder, "js", "res", ".linux.shim"))
+const cmdContents = () => [
+    fs.readFileSync(path.join(aliasFolder, "js", "res", ".windows.script")),
+    fs.readFileSync(path.join(aliasFolder, "js", "res", ".linux.script"))
 ];
-const shimTypes = { win: 0, lin: 1 };
+const scriptTypes = { win: 0, lin: 1 };
 const descriptorFile = path.join(aliasFolder, "js", "res", "descriptors.json");
 
 const help = {
@@ -19,17 +19,17 @@ const help = {
     create: "Creates two files: name.cmd and js\\name.js. The cmd file contains default text to execute the js file in the Node runtime. The js file contains a 'Hello, name' console command used as a starting point for the js program to function. Zen mode is subsequently opened to the alias folder and the js file.",
     list: "Lists all aliases and their descriptions.",
     descriptors: "Opens the descriptor file for modifications.",
-    switchLang: "Switches all eligable node shims into the opposite operating system. Ie, from Batch to Shell and vice verser.",
+    switchLang: "Switches all eligable node alias scripts into the opposite operating system. Ie, from Batch to Shell and vice verser.",
     switchLangDryRun: "Runs --switch-lang in dry run mode.",
     switchType: "Specifies which type to convert all aliases to",
     folder: "Prints the current aliasFolder location",
     update: "Updates the aliases to the latest version",
 }
 
-function getNodeShims() {
+function getNodeSscripts() {
     let dir = fs.readdirSync(aliasFolder);
-    let shims = [];
-    let buffer = Buffer.alloc("#!/bin/bash\n##nodeshim".length);
+    let scripts = [];
+    let buffer = Buffer.alloc("#!/bin/bash\n##nodescript".length);
     let bufferString = "";
     let filePath;
     let fd;
@@ -45,10 +45,10 @@ function getNodeShims() {
         fs.closeSync(fd);
         bufferString = buffer.toString();
 
-        if (bufferString.includes("nodeshim")) shims.push(file); // is a windows file so include
+        if (bufferString.includes("nodescript")) scripts.push(file); // is a windows file so include
     }
 
-    return shims;
+    return scripts;
 }
 
 function commandSelf(args) {
@@ -75,13 +75,13 @@ function commandUpdate(args) {
     if (!IS_WIN) commandSwitch({ mode: "lin" });
 }
 function commandSwitch(args) {
-    let shims = getNodeShims();
+    let scripts = getNodeSscripts();
     let dryRun = args.dryRun ? [""] : false;
 
-    console.log("All node shims:")
-    console.log(shims.map((s) => `  ${s}`).join("\n"));
+    console.log("All node scripts:")
+    console.log(scripts.map((s) => `  ${s}`).join("\n"));
 
-    process.stdout.write("\x1b[33m" + shims.map(() => ".").join("") + "\x1b[0m");
+    process.stdout.write("\x1b[33m" + scripts.map(() => ".").join("") + "\x1b[0m");
     process.stdout.write("\x1b[0G");
 
     const forceType = args.mode;
@@ -89,14 +89,14 @@ function commandSwitch(args) {
     let oldPath;
     let newPath;
     let endsWithCmd;
-    for (let shim of shims) {
-        endsWithCmd = shim.endsWith(".cmd");
-        newType = shimTypes[forceType] ?? 0; // convert to cmd as default
-        if (endsWithCmd) newType = shimTypes[forceType] ?? 1; // end on cmd? convert to bash
+    for (let script of scripts) {
+        endsWithCmd = script.endsWith(".cmd");
+        newType = scriptTypes[forceType] ?? 0; // convert to cmd as default
+        if (endsWithCmd) newType = scriptTypes[forceType] ?? 1; // end on cmd? convert to bash
 
-        oldPath = path.join(aliasFolder, shim);
-        let dot = shim.lastIndexOf(".");
-        newPath = path.join(aliasFolder, newType === 1 ? shim.substring(0, dot >= 0 ? dot : undefined) : shim + (endsWithCmd ? "" : ".cmd"));
+        oldPath = path.join(aliasFolder, script);
+        let dot = script.lastIndexOf(".");
+        newPath = path.join(aliasFolder, newType === 1 ? script.substring(0, dot >= 0 ? dot : undefined) : script + (endsWithCmd ? "" : ".cmd"));
 
         try {
             if (oldPath === newPath) {
@@ -105,7 +105,7 @@ function commandSwitch(args) {
             }
 
             if (!dryRun) {
-                fs.writeFileSync(oldPath, cmdContents[newType]);
+                fs.writeFileSync(oldPath, cmdContents()[newType]);
                 fs.renameSync(oldPath, newPath);
             } else dryRun.push(`${oldPath}  ->  ${newPath}`);
 
@@ -136,7 +136,7 @@ function commandCreate(args) {
         } else if (fs.existsSync(psLoc)) { // if the cmd doesn't exist, but the ps1 exists, open that instead
             items.push(psLoc);
         } else {
-            fs.writeFileSync(cmdLoc, cmdContents);
+            fs.writeFileSync(cmdLoc, cmdContents()[+(!IS_WIN)]); // +(!IS_WIN):  If windows, !IS_WIN = False then + coerces to a 0. If Lin, !IS_WIN = True then + coerces to a 1
             fs.writeFileSync(jsLoc, `console.log("Hello, ${alias}");`);
             items.push(jsLoc);
 

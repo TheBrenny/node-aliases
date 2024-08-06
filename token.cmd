@@ -1,4 +1,4 @@
-::nodeshim
+::nodescript
 @ECHO off
 SETLOCAL
 

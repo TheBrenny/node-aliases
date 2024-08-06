@@ -1,5 +1,5 @@
 #!/bin/bash
-##nodeshim
+##nodescript
 curdir=`dirname "$0"`
 fileCalled="${0##?*/}"
 fileCalled="${fileCalled%.?*}"

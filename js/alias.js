@@ -123,8 +123,8 @@ function commandSwitch(args) {
 function commandCreate(args) {
     let items = [];
 
-    for (let i = 0; i < args._.length; i++) {
-        let alias = args._[i];
+    for (let i = 0; i < args.aliases.length; i++) {
+        let alias = args.aliases[i];
 
         const cmdLoc = path.join(aliasFolder, alias + (IS_WIN ? ".cmd" : ""));
         const psLoc = path.join(aliasFolder, alias + ".ps1")
@@ -153,6 +153,7 @@ require("yargs")
     .scriptName("alias")
     .showHelpOnFail(true)
     .command("$0", help.open, (y) => { }, commandSelf)
+    .command("$0 [aliases...]", help.create, (y) => { }, commandCreate)
     .command("list", help.list, (y) => { }, commandList)
     .command("descriptors", help.descriptors, (y) => { }, commandDescriptors)
     .command("update", help.update, (y) => { }, commandUpdate)
@@ -170,5 +171,4 @@ require("yargs")
             }
         });
     }, commandSwitch)
-    .command("[aliases...]", help.create, (y) => { }, commandCreate)
     .argv;

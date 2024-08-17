@@ -3,12 +3,12 @@ const bold = "1";
 const underline = "4";
 const normal = "0";
 
-const color = (...args) => ((args = args.length === 0 ? [normal] : Array.from(args)), "\033[" + args.join(";") + "m");
+const color = (...args) => ((args = args.length === 0 ? [normal] : Array.from(args)), `\x1b[${args.join(";")}m`);
 
 const printHelp = (e) => {
-    console.log("Usage: " + color(green, bold) + "jsuck [term]" + color());
+    console.log(`Usage: ${color(green, bold)}jsuck [term]${color()}`);
     console.log("   term can be any of these:");
-    console.log("   " + Object.keys(all).map(t => color(green) + t + color()).join(", "))
+    console.log(`   ${Object.keys(all).map(t => color(green) + t + color()).join(", ")}`)
     process.exit(e ?? 0);
 }
 
@@ -133,14 +133,14 @@ console.log();
 if (Object.keys(out).length > 0) {
     Object.keys(out).forEach(e => {
         console.log(color(green, bold, underline) + e + color());
-        out[e].forEach((l) => console.log("    " + color(green) + l.name.padEnd(maxSize, " ") + color() + "  --  " + l.desc));
+        out[e].forEach((l) => console.log(`    ${color(green)}${l.name.padEnd(maxSize, " ")}${color()}  --  ${l.desc}`));
     });
 } else {
     maxSize = Object.keys(all).reduce((a, c) => Math.max(a, c.length), 0);
     console.log("Hmm... It seems that jsuck jsucks...");
     console.log("Here are the categories:");
     Object.keys(all).forEach(e => {
-        console.log("    " + color(green) + e.padEnd(maxSize, " ") + color() + "  --  " + all[e].length);
+        console.log(`    ${color(green)}${e.padEnd(maxSize, " ")}${color()}  --  ${all[e].length}`);
     });
 }
 

@@ -146,6 +146,7 @@ function commandCreate(args) {
         }
     }
 
+    console.log(`Opening ${items.length} items in 'zen'...`)
     zen(items);
 }
 

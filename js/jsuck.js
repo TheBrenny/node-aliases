@@ -99,7 +99,7 @@ const all = {
     ],
     "random": [
         {
-            name: "(Math.random()).toString(36).slice(2)",
+            name: "Math.random().toString(36).slice(2)",
             desc: "generates 10 random alpha-numeric characters"
         }
     ]

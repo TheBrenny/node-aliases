@@ -96,6 +96,12 @@ const all = {
             name: "require.main === module",
             desc: "determines if this is called from CMD (not required)"
         }
+    ],
+    "random": [
+        {
+            name: "(Math.random()).toString(36).slice(2)",
+            desc: "generates 10 random alpha-numeric characters"
+        }
     ]
 };
 

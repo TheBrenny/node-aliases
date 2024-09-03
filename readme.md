@@ -1,12 +1,12 @@
 A repo with all my Node-based tools, and my aliases. Clone and put on your path to have them too!
 
-The following code block is for the Command Prompt, not PowerShell!
+The following code block is for **PowerShell**!
 
-```prompt
-> cd js && npm install && cd ..
-> setx PATH "%PATH%;%CD%"
-> ftype Custom.PowerShellScript="C:\Program Files\PowerShell\7\pwsh.exe" "%0" %*
-> assoc .ps1=Custom.PowerShellScript
+```cmd
+cd js && npm install && cd ..
+[Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::User) + "$pwd", [System.EnvironmentVariableTarget]::User)
+Start-Process cmd "/c assoc .ps1=Custom.PowerShellScript" -Verb RunAs
+Start-Process cmd '/c ftype Custom.PowerShellScript="C:\Program Files\PowerShell\7\pwsh.exe" "%0" %*' -Verb RunAs
 ```
 
 See more at https://dev.to/thebrenny/using-node-because-doskey-hurts-1mfa

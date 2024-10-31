@@ -54,5 +54,6 @@
     "zen": "Opens the VSCode Zen profile (minimal VSCode)",
     "ln": "Alias to 'mklink'",
     "explore": "Opens the Windows Explorer",
-    "initnode": "Alias to 'mknode'"
+    "initnode": "Alias to 'mknode'",
+    "wasabi-install": "\u001b[31mCOMING SOON:\u001b[0m Installs android `.[x]apk[m]`s to WSA"
 }

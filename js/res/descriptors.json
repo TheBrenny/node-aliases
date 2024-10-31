@@ -11,6 +11,7 @@
     "file": "Alias to 'wsl file'",
     "ga": "Alias to 'git add'",
     "gc": "Alias to 'git commit",
+    "gd": "Alias to 'git diff'",
     "gitup": "Git push, but sets the remote upstream if one isn't found",
     "got": "Alias to 'git'",
     "grep": "Alias to 'wsl grep'",

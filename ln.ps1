@@ -16,9 +16,12 @@ param(
 )
 
 if ($LinkType -eq "Symbolic") { $LinkType = "SymbolicLink" }
-if ($LinkType -eq "Directory") { $LinkType = "DirectoryJunction" }
-if ($LinkType -eq "Junction") { $LinkType = "DirectoryJunction" }
-if ($LinkType -eq "Hard") { $LinkType = "HardLink" }
+if ($LinkType -eq "DirectoryJunction") { $LinkType = "Junction" }
+if ($LinkType -eq "Junction") { $LinkType = "Junction" }
+if ($LinkType -eq "HardLink") { $LinkType = "File" }
+if ($LinkType -eq "Hard") { $LinkType = "File" }
 
+$Link = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath((Join-Path . $Link))
+$Real = (Resolve-Path $Real).Path
 
 New-Item -Path $Link -Value $Real -ItemType $LinkType

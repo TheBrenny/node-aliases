@@ -56,5 +56,8 @@
     "ln": "Alias to 'mklink'",
     "explore": "Opens the Windows Explorer",
     "initnode": "Alias to 'mknode'",
-    "wasabi-install": "\u001b[31mCOMING SOON:\u001b[0m Installs android `.[x]apk[m]`s to WSA"
+    "wasabi-install": "\u001b[31mCOMING SOON:\u001b[0m Installs android `.[x]apk[m]`s to WSA",
+    "nt": "Alias to 'nodeterm'",
+    "ip": "Gets all assigned IP addresses",
+    "regex": "A cheat sheet for Regex"
 }

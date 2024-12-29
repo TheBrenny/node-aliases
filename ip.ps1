@@ -1,0 +1,1 @@
+Get-NetIPAddress -AddressFamily IPv4 | select IPAddress,InterfaceAlias,InterfaceIndex | sort InterfaceIndex

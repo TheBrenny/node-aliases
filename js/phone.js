@@ -1,5 +1,4 @@
 const tc = require("transposition-cracker");
-const colors = require("colors");
 let args = Array.from(process.argv);
 args.splice(0, 2);
 

@@ -24,6 +24,7 @@ const help = {
     switchType: "Specifies which type to convert all aliases to",
     folder: "Prints the current aliasFolder location",
     update: "Updates the aliases to the latest version",
+    help: "Shows this help page",
 }
 
 function getNodeSscripts() {
@@ -155,6 +156,7 @@ require("yargs")
     .showHelpOnFail(true)
     .command("$0", help.open, (y) => { }, commandSelf)
     .command("$0 [aliases...]", help.create, (y) => { }, commandCreate)
+    .command("help", help.help, (y) => y.help())
     .command("list", help.list, (y) => { }, commandList)
     .command("descriptors", help.descriptors, (y) => { }, commandDescriptors)
     .command("update", help.update, (y) => { }, commandUpdate)

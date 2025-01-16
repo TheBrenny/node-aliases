@@ -99,7 +99,7 @@ const all = {
     ],
     "random": [
         {
-            name: "Math.random().toString(36).slice(2)",
+            name: ["Math.random()", ".toString(36).slice(2)"],
             desc: "generates 10 random alpha-numeric characters"
         }
     ]
@@ -124,16 +124,27 @@ if (process.argv.length > 2) {
     }
 }
 
-let maxSize = Object.values(out) // => array of arrays of objs
+let maxSize = 0;
+// for(let part in out) {
+//     let partArray = out[part];
+//     for(let tip of partArray) {
+
+//     }
+// }
+
+maxSize = Object.values(out) // => array of arrays of objs
     .reduce((a, c) => a.concat(c), []) // => 1d array of objs
-    .map((obj) => obj.name) // => 1d array of strings
-    .reduce((a, c) => Math.max(a, c.length), 0); // => longest string
+    .map((obj) => typeof obj.name === "string" ? obj.name.length : obj.name.reduce((a, c, i) => c.length + (i > 0 ? 2 : 0) > a ? c.length : a, 0)) // => 1d array of numbers
+    .reduce((a, c) => Math.max(a, c), 0); // => number equating to longest string
 
 console.log();
 if (Object.keys(out).length > 0) {
     Object.keys(out).forEach(e => {
         console.log(color(green, bold, underline) + e + color());
-        out[e].forEach((l) => console.log(`    ${color(green)}${l.name.padEnd(maxSize, " ")}${color()}  --  ${l.desc}`));
+        out[e].forEach((l) => {
+            if (l.name instanceof Array) l.name = l.name.join("\n      ");
+            console.log(`    ${color(green)}${l.name.padEnd(maxSize, " ")}${color()}  --  ${l.desc}`)
+        });
     });
 } else {
     maxSize = Object.keys(all).reduce((a, c) => Math.max(a, c.length), 0);

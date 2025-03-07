@@ -3,6 +3,8 @@ const exec = cp.execSync;
 const spawn = cp.spawn;
 
 try {
+    let args = process.argv.slice(2);
+
     let branch = exec("git branch").toString().split("\n");
     branch = branch.find(b => b.startsWith("*"));
     branch = branch.substring(2);
@@ -10,7 +12,7 @@ try {
     let upstream = exec("git remote").toString().split("\n")[0];
     if (upstream.length === 0) throw new Error("upstream not found");
 
-    let proc = spawn(`git`, ["push", "--set-upstream", upstream, branch], {
+    let proc = spawn(`git`, ["push", "--set-upstream", upstream, branch, ...args], {
         shell: true,
         stdio: "inherit"
     });

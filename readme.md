@@ -2,7 +2,7 @@ A repo with all my Node-based tools, and my aliases. Clone and put on your path 
 
 The following code block is for **PowerShell**!
 
-```cmd
+```pwsh
 cd js && npm install && cd ..
 [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::User) + "$pwd", [System.EnvironmentVariableTarget]::User)
 Start-Process cmd "/c assoc .ps1=Custom.PowerShellScript" -Verb RunAs
@@ -17,6 +17,7 @@ Required apps for this to work:
 
 | Alias                     | Required commands/programs                                                                                      |
 |---------------------------|-----------------------------------------------------------------------------------------------------------------|
+| `bat`                     | [Bat](https://github.com/sharkdp/bat)                                                                           |
 | `cheat` and `cheatsh`     | [WSL](https://www.microsoft.com/en-au/p/ubuntu/9nblggh4msv6) and [`cht.sh`](http://cheat.sh/)                   |
 | `matlab-cli`              | [Python](https://www.python.org/) and [Matlab](https://www.mathworks.com/products/matlab.html)                  |
 | `octave` and `octave-cli` | [Octave](https://www.gnu.org/software/octave/index)                                                             |

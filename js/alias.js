@@ -56,6 +56,35 @@ function commandSelf(args) {
     console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
     zen([]);
 }
+function commandCreate(args) {
+    let items = [];
+
+    for (let i = 0; i < args.aliases.length; i++) {
+        let alias = args.aliases[i];
+
+        const cmdLoc = path.join(aliasFolder, alias + (IS_WIN ? ".cmd" : ""));
+        const psLoc = path.join(aliasFolder, alias + ".ps1")
+        const jsLoc = path.join(aliasFolder, "js", alias + ".js");
+
+        if (fs.existsSync(cmdLoc)) { // if the cmd exists and the js exists, just open the js
+            if (fs.existsSync(jsLoc)) items.push(jsLoc);
+            else items.push(cmdLoc);
+        } else if (fs.existsSync(psLoc)) { // if the cmd doesn't exist, but the ps1 exists, open that instead
+            items.push(psLoc);
+        } else {
+            fs.writeFileSync(cmdLoc, cmdContents()[+(!IS_WIN)]); // +(!IS_WIN):  If windows, !IS_WIN = False then + coerces to a 0. If Lin, !IS_WIN = True then + coerces to a 1
+            fs.writeFileSync(jsLoc, `console.log("Hello, ${alias}");`);
+            items.push(jsLoc);
+
+            let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
+            descriptors[alias] = descriptors[alias] ?? "\x1b[31m ----- NO DESCRIPTION GIVEN! -----\x1b[0m";
+            fs.writeFileSync(descriptorFile, JSON.stringify(descriptors, null, 4));
+        }
+    }
+
+    console.log(`Opening ${items.length} items in 'zen'...`)
+    zen(items);
+}
 function commandList(args) {
     let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
     let maxName = Object.keys(descriptors).reduce((a, c) => Math.max(a, c.length), 0);
@@ -121,35 +150,7 @@ function commandSwitch(args) {
     if (dryRun) console.log(`Dry run:\n${dryRun.map((d) => `  ${d}`).join("\n")}`);
     console.log("Done!");
 }
-function commandCreate(args) {
-    let items = [];
 
-    for (let i = 0; i < args.aliases.length; i++) {
-        let alias = args.aliases[i];
-
-        const cmdLoc = path.join(aliasFolder, alias + (IS_WIN ? ".cmd" : ""));
-        const psLoc = path.join(aliasFolder, alias + ".ps1")
-        const jsLoc = path.join(aliasFolder, "js", alias + ".js");
-
-        if (fs.existsSync(cmdLoc)) { // if the cmd exists and the js exists, just open the js
-            if (fs.existsSync(jsLoc)) items.push(jsLoc);
-            else items.push(cmdLoc);
-        } else if (fs.existsSync(psLoc)) { // if the cmd doesn't exist, but the ps1 exists, open that instead
-            items.push(psLoc);
-        } else {
-            fs.writeFileSync(cmdLoc, cmdContents()[+(!IS_WIN)]); // +(!IS_WIN):  If windows, !IS_WIN = False then + coerces to a 0. If Lin, !IS_WIN = True then + coerces to a 1
-            fs.writeFileSync(jsLoc, `console.log("Hello, ${alias}");`);
-            items.push(jsLoc);
-
-            let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
-            descriptors[alias] = descriptors[alias] ?? "\x1b[31m ----- NO DESCRIPTION GIVEN! -----\x1b[0m";
-            fs.writeFileSync(descriptorFile, JSON.stringify(descriptors, null, 4));
-        }
-    }
-
-    console.log(`Opening ${items.length} items in 'zen'...`)
-    zen(items);
-}
 
 require("yargs")
     .scriptName("alias")

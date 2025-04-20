@@ -95,6 +95,10 @@ const all = {
         {
             name: "require.main === module",
             desc: "determines if this is called from CMD (not required)"
+        },
+        {
+            name: "import.meta.url === pathToFileURL(process.argv[1]).href",
+            desc: "determines if this is called from CMD (not required) (for modules)"
         }
     ],
     "random": [

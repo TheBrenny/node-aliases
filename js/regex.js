@@ -174,14 +174,13 @@ data.forEach((block) => {
     block.data.forEach((d) => {
         d.size = collapseRx(d.rx).length;
         longestRegex = Math.max(longestRegex, d.size);
-        console.log(longestRegex);
     });
 
 });
 
 longestBlock += 6; // the longest will have '===' on each side
 
-console.log("\n");
+console.log();
 data.forEach((block) => {
     let name = block.name;
     let blockSpace = longestBlock - name.length;

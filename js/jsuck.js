@@ -99,6 +99,10 @@ const all = {
         {
             name: ["import.meta.url ===", "pathToFileURL(**argv[1]).href"],
             desc: "determines if this is called from CMD (not required) (for modules) (**process.argv[1])"
+        },
+        {
+            name: ["path.dirname(fileURLToPath(", "import.meta.url))"],
+            desc: "the ESM way to get '__dirname'"
         }
     ],
     "random": [

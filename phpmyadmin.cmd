@@ -1,0 +1,1 @@
+docker run --rm --name phpmyadmin --ip 127.6.5.4 -p 80:80 -e PMA_HOST=%1 phpmyadmin

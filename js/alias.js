@@ -19,7 +19,7 @@ const help = {
     create: "Creates two files: name.cmd and js\\name.js. The cmd file contains default text to execute the js file in the Node runtime. The js file contains a 'Hello, name' console command used as a starting point for the js program to function. Zen mode is subsequently opened to the alias folder and the js file.",
     list: "Lists all aliases and their descriptions.",
     descriptors: "Opens the descriptor file for modifications.",
-    switch: "Switches all eligible .cmd/.sh scripts into the opposite operating system. Ie, from Batch to Bash and vice verser. A script is eligible when it has `::nodescript` as its first line.",
+    switch: "Switches all eligible .cmd/.sh scripts into the opposite operating system. Ie, from Batch to Bash and vice verser. A script is eligible when it has `nodescript` in the first 25 characters.",
     switchLangDryRun: "[switch] Runs --switch-lang in dry run mode.",
     switchType: "[switch] Specifies which type to convert all aliases to",
     folder: "Prints the current aliasFolder location",
@@ -209,5 +209,6 @@ require("yargs")
             description: help.switchType,
         }
     })
+    .alias("help", "h")
     .group(["dryRun", "mode"], "Switch options:")
     .argv;

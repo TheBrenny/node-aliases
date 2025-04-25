@@ -60,7 +60,6 @@ function commandSelf(args) {
     else if (args.folder) return console.log(aliasFolder);
     else if (args.aliases?.length > 0) return commandCreate(args.aliases);
     else {
-        console.log(args);
         console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
         zen([]);
     }

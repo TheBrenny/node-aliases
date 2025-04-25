@@ -15,13 +15,13 @@ const descriptorFile = path.join(aliasFolder, "js", "res", "descriptors.json");
 
 const help = {
     description: "Saves aliases to the registered alias folder!",
-    open: "Opens the alias folder in zen mode.",
+    open: "Opens the alias folder in zen mode and creates the aliases specified.",
     create: "Creates two files: name.cmd and js\\name.js. The cmd file contains default text to execute the js file in the Node runtime. The js file contains a 'Hello, name' console command used as a starting point for the js program to function. Zen mode is subsequently opened to the alias folder and the js file.",
     list: "Lists all aliases and their descriptions.",
     descriptors: "Opens the descriptor file for modifications.",
-    switchLang: "Switches all eligable node alias scripts into the opposite operating system. Ie, from Batch to Shell and vice verser.",
-    switchLangDryRun: "Runs --switch-lang in dry run mode.",
-    switchType: "Specifies which type to convert all aliases to",
+    switch: "Switches all eligible .cmd/.sh scripts into the opposite operating system. Ie, from Batch to Bash and vice verser. A script is eligible when it has `::nodescript` as its first line.",
+    switchLangDryRun: "[switch] Runs --switch-lang in dry run mode.",
+    switchType: "[switch] Specifies which type to convert all aliases to",
     folder: "Prints the current aliasFolder location",
     update: "Updates the aliases to the latest version",
     help: "Shows this help page",
@@ -53,14 +53,23 @@ function getNodeSscripts() {
 }
 
 function commandSelf(args) {
-    console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
-    zen([]);
+    if (args.list) return commandList();
+    else if (args.descriptors) return commandDescriptors();
+    else if (args.update) return commandUpdate();
+    else if (args.switch) return commandSwitch({ mode: args.mode, dryRun: args.dryRun });
+    else if (args.folder) return console.log(aliasFolder);
+    else if (args.aliases?.length > 0) return commandCreate(args.aliases);
+    else {
+        console.log(args);
+        console.log(`Opening [${aliasFolder}] folder in 'zen'...`);
+        zen([]);
+    }
 }
-function commandCreate(args) {
+function commandCreate(aliases) {
     let items = [];
 
-    for (let i = 0; i < args.aliases.length; i++) {
-        let alias = args.aliases[i];
+    for (let i = 0; i < aliases.length; i++) {
+        let alias = aliases[i];
 
         const cmdLoc = path.join(aliasFolder, alias + (IS_WIN ? ".cmd" : ""));
         const psLoc = path.join(aliasFolder, alias + ".ps1")
@@ -85,22 +94,22 @@ function commandCreate(args) {
     console.log(`Opening ${items.length} items in 'zen'...`)
     zen(items);
 }
-function commandList(args) {
+function commandList() {
     let descriptors = JSON.parse(fs.readFileSync(descriptorFile));
     let maxName = Object.keys(descriptors).reduce((a, c) => Math.max(a, c.length), 0);
     for (let d of Object.entries(descriptors).sort()) {
         console.log(d[0].padStart(maxName) + ": " + d[1]);
     }
 }
-function commandDescriptors(args) {
+function commandDescriptors() {
     console.log(`Opening [${descriptorFile}] in 'zen'...`);
     zen([descriptorFile]);
 }
-function commandUpdate(args) {
+function commandUpdate() {
     console.log("Todo item...")
     if (!IS_WIN) commandSwitch({ mode: "win" });
     git("stash", "push");
-    git("pull", "origin", "main");
+    git("pull", "--rebase", "origin", "main");
     git("stash", "pop");
     if (!IS_WIN) commandSwitch({ mode: "lin" });
 }
@@ -151,28 +160,54 @@ function commandSwitch(args) {
     console.log("Done!");
 }
 
-
 require("yargs")
     .scriptName("alias")
     .showHelpOnFail(true)
-    .command("$0", help.open, (y) => { }, commandSelf)
-    .command("$0 [aliases...]", help.create, (y) => { }, commandCreate)
-    .command("help", help.help, (y) => y.help())
-    .command("list", help.list, (y) => { }, commandList)
-    .command("descriptors", help.descriptors, (y) => { }, commandDescriptors)
-    .command("update", help.update, (y) => { }, commandUpdate)
-    .command("switch", help.switchLang, (y) => {
-        y.options({
-            dryRun: {
-                alias: "d",
-                boolean: true,
-                description: help.switchLangDryRun
-            },
-            mode: {
-                alias: "m",
-                choices: ["win", "lin"],
-                description: help.switchType,
-            }
+    .command("$0 [aliases..]", help.open, (y) => {
+        y.positional("aliases", {
+            type: 'string',
+            array: true,
         });
-    }, commandSwitch)
+    }, commandSelf)
+    .options({
+        folder: {
+            alias: "f",
+            type: "boolean",
+            default: false,
+            description: help.folder,
+        },
+        list: {
+            alias: "l",
+            type: "boolean",
+            default: false,
+            description: help.list,
+        },
+        descriptors: {
+            alias: "d",
+            type: "boolean",
+            default: false,
+            description: help.descriptors,
+        },
+        update: {
+            alias: "u",
+            type: "boolean",
+            default: false,
+            description: help.update,
+        },
+        switch: {
+            alias: "s",
+            type: "boolean",
+            default: false,
+            description: help.switch
+        },
+        dryRun: {
+            boolean: true,
+            description: help.switchLangDryRun
+        },
+        mode: {
+            choices: ["win", "lin"],
+            description: help.switchType,
+        }
+    })
+    .group(["dryRun", "mode"], "Switch options:")
     .argv;

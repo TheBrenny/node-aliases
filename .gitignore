@@ -117,3 +117,4 @@ dist
 
 # Ignore important fils
 ssh-*.cmd
+js/setviewsettings.json

@@ -1,14 +1,3 @@
-/*
-
-Quantifiers & Alternation
-a*a+a?	0 or more, 1 or more, 0 or 1
-a{5}a{2,}	exactly five, two or more
-a{1,3}	between one & three
-a+?a{2,}?	match as few as possible
-ab|cd	match ab or cd
-
-*/
-
 const data = [
     {
         name: "Character classes",

@@ -2,7 +2,7 @@
 
 const path = require("path");
 const spawnSync = require("child_process").spawnSync;
-const settings = require("./setviewsettings");
+const settings = getSettingsJson();
 const inputVals = Object.values(settings).map(v => v.input);
 
 const app = "cmm.exe";
@@ -63,4 +63,11 @@ function handleResponseAndExit(results) {
         process.exit(1);
     }
     process.exit(0);
+}
+
+function getSettingsJson() {
+    let out;
+    try { out = require("./setviewsettings"); }
+    catch { out = {}; }
+    return out;
 }

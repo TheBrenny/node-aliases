@@ -32,3 +32,4 @@ Required apps for this to work:
 | `setview`                 | [ControlMyMonitor](https://www.nirsoft.net/utils/control_my_monitor.html)                                       |
 | `term`                    | [Windows Terminal](https://github.com/microsoft/terminal)                                                       |
 | `pwsh`                    | [PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows) |
+| `svgtopng`                | [Inkscape](https://inkscape.org/)                                                                               |

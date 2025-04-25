@@ -60,8 +60,8 @@ function printHelp() {
         "    - shim --help",
         "           Shows this help text.",
         "",
-        "   To change the location of the shim folder, set the 'shimFolder' variable.",
-        "   The current location of the shim folder is:",
+        "   To change the location of the shim folder, set the 'ShimFolder' environment",
+        "   variable. The current location of the shim folder is:",
         "      " + shimFolder,
         ""
     ];

@@ -1,4 +1,4 @@
-const { spawn, exec } = require('child_process');
+const { spawn } = require('child_process');
 const bossman = require("big-kahuna").dashCare(true);
 
 let cmd = [];

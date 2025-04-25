@@ -1,10 +1,8 @@
 const {
     exec,
-    spawn
 } = require('child_process');
 const path = require('path');
 let { aliasFolder } = require("./const");
-const { homedir } = require('os');
 
 const IS_WIN = process.platform === "win32";
 
@@ -27,7 +25,7 @@ function zen(items) {
     child.unref();
 
     // BUG: There seems to be a bug where if the Zen window is NOT open, the calling
-    // process stays open. But if the Zen window is already open, the the calling process
+    // process stays open. But if the Zen window is already open, then the calling process
     // eventually closes?
 
     return child;

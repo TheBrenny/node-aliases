@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Input validation
+if [[ $# -ne 3 ]]; then
+    echo "Usage: $0 <input_file> <output_file> <key>"
+    exit 1
+fi
+
+input_file="$1"
+output_file="$2"
+key="$3"
+
+# Abort on missing input file
+if [[ ! -f "$input_file" ]]; then
+    echo "Error: Input file not found: $input_file"
+    exit 1
+fi
+
+# Get key length
+key_len=${#key}
+
+# XOR each byte
+i=0
+: > "$output_file"  # Truncate or create output file
+
+while IFS= read -r -n1 -d '' char || [[ -n "$char" ]]; do
+    byte=$(printf '%d' "'$char")
+    key_char="${key:i % key_len:1}"
+    key_byte=$(printf '%d' "'$key_char")
+    xor_byte=$(( byte ^ key_byte ))
+    printf "\\x%02x" "$xor_byte" >> "$output_file"
+    ((i++))
+done < <(dd if="$input_file" bs=1 status=none)
+
+echo "XOR complete. Output saved to $output_file"

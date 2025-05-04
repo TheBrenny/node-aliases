@@ -10,7 +10,7 @@ param(
 
     [Parameter(Mandatory = $True, Position = 2)]
     [String]
-    $Key = "SymbolicLink"
+    $Key
 )
 
 if(![System.IO.Path]::IsPathRooted($OutputFile)) {

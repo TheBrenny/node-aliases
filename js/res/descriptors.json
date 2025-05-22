@@ -13,7 +13,6 @@
     "ga": "Alias to 'git add'",
     "gc": "Alias to 'git commit",
     "gcm": "Alias to 'git commit --message'",
-    "gcmd": "Alias to 'Get-Command'",
     "gd": "Alias to 'git diff'",
     "gitup": "Git push, but sets the remote upstream if one isn't found",
     "got": "Alias to 'git'",

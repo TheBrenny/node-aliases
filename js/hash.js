@@ -33,57 +33,42 @@ const hashAlgorithms = [
     "SM3",
     "BLAKE2b512",
     "BLAKE2s256",
-    "id-rsassa-pkcs1-v1_5-with-sha3-224",
     "SHA3-224",
-    "id-rsassa-pkcs1-v1_5-with-sha3-256",
     "SHA3-256",
-    "id-rsassa-pkcs1-v1_5-with-sha3-384",
     "SHA3-384",
-    "id-rsassa-pkcs1-v1_5-with-sha3-512",
     "SHA3-512",
     "MD4",
-    "md4WithRSAEncryption",
     "MD4",
     "MD5",
     "MD5-SHA1",
-    "md5WithRSAEncryption",
     "MD5",
     "ripemd",
     "RIPEMD160",
     "RIPEMD160",
-    "ripemd160WithRSA",
     "RIPEMD160",
     "rmd160",
     "RIPEMD160",
     "SHA1",
-    "sha1WithRSAEncryption",
     "SHA1",
     "SHA224",
-    "sha224WithRSAEncryption",
     "SHA224",
     "SHA256",
-    "sha256WithRSAEncryption",
     "SHA256",
     "SHA3-224",
     "SHA3-256",
     "SHA3-384",
     "SHA3-512",
     "SHA384",
-    "sha384WithRSAEncryption",
     "SHA384",
     "SHA512",
     "SHA512-224",
-    "sha512-224WithRSAEncryption",
     "SHA512-224",
     "SHA512-256",
-    "sha512-256WithRSAEncryption",
     "SHA512-256",
-    "sha512WithRSAEncryption",
     "SHA512",
     "SHAKE128",
     "SHAKE256",
     "SM3",
-    "sm3WithRSAEncryption",
     "SM3",
     "ssl3-md5",
     "MD5",
@@ -93,7 +78,6 @@ const hashAlgorithms = [
 ];
 const yargs = require("yargs")
     .scriptName("hash")
-    .showHelpOnFail(true)
     .command("$0 [options] <targets..>", "Hash the target files, directories, or strings", (y) => {
         y.options({
             "algorithm": {
@@ -132,35 +116,52 @@ const yargs = require("yargs")
             desc: "The target file or folder to hash",
             array: true
         });
-    }).argv;
-
+    })
+    .showHelpOnFail(true, "Use --help for help");
+const args = yargs.argv;
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { basename } = require("path");
 
 (async () => {
-    console.log("Using algorithm: " + yargs.algorithm);
-    if (yargs.string) {
-        let input = yargs.individual ? yargs.targets : [yargs.targets.reduce((a, c) => a + c)];
-        (await hashStrings(input, yargs.algorithm)).forEach((hash, idx) => {
+    if (!(hashAlgorithms.includes(args.algorithm))) {
+        yargs.showHelp(console.error);
+        let longestAlgo = hashAlgorithms.reduce((a,b) => a.length > b.length ? a : b).length;
+        let lines = [];
+        let line = "";
+        for(let algo of hashAlgorithms) {
+            algo = algo.padEnd(longestAlgo + 2);
+            if((line + algo).length > yargs.terminalWidth()){
+                lines.push(line.trim());
+                line = "";
+            }
+            line += algo;
+        }
+        console.error(`\nInvalid hash algorithm "${args.algorithm}". Pick one of:\n${lines.join("\n")}`);
+        process.exit(1);
+    }
+    console.log("Using algorithm: " + args.algorithm);
+    if (args.string) {
+        let input = args.individual ? args.targets : [args.targets.reduce((a, c) => a + c)];
+        (await hashStrings(input, args.algorithm)).forEach((hash, idx) => {
             console.log(`${hash} <= ${input[idx]}`);
         })
-    } else if (yargs.individual) {
+    } else if (args.individual) {
         const SPACE_PADDING = 2;
         let files = [];
-        if (yargs.recursive) files = yargs.targets.map((t) => listFilesRecurse(t)).flat(100);
-        else files = yargs.targets.map((t) => listFiles(t)).flat(100);
+        if (args.recursive) files = args.targets.map((t) => listFilesRecurse(t)).flat(100);
+        else files = args.targets.map((t) => listFiles(t)).flat(100);
         files = files.sort();
         console.log("Files found: " + files.length);
 
-        let proms = files.map((f) => hashFiles([f], yargs.algorithm).then(h => [f, h]));
+        let proms = files.map((f) => hashFiles([f], args.algorithm).then(h => [f, h]));
         proms = proms.map(p => p.then(([f, h]) => console.log(path.basename(f) + ":\n    " + h)));
     } else {
         console.log(
             await hashFiles(
-                yargs.targets.map((t) => listFilesRecurse(t)).flat(100).sort(),
-                yargs.algorithm
+                args.targets.map((t) => listFilesRecurse(t)).flat(100).sort(),
+                args.algorithm
             )
         )
     }

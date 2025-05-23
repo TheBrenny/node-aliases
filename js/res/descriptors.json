@@ -1,6 +1,7 @@
 {
     "alert": "Creates a toast notifcation alert",
     "alias": "Creates, edits, or lists aliases",
+    "base64": "Converts strings between ascii and base64",
     "cat": "Alias to 'bat'",
     "cdp": "CD to ~\\MySpace\\Programming",
     "celar": "Alias to 'cls'",

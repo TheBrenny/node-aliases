@@ -27,7 +27,7 @@ const help = {
     help: "Shows this help page",
 }
 
-function getNodeSscripts() {
+function getNodeScripts() {
     let dir = fs.readdirSync(aliasFolder);
     let scripts = [];
     let buffer = Buffer.alloc("#!/bin/bash\n##nodescript".length);
@@ -113,7 +113,7 @@ function commandUpdate() {
     if (!IS_WIN) commandSwitch({ mode: "lin" });
 }
 function commandSwitch(args) {
-    let scripts = getNodeSscripts();
+    let scripts = getNodeScripts();
     let dryRun = args.dryRun ? [""] : false;
 
     console.log("All node scripts:")

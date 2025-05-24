@@ -75,14 +75,14 @@ const hashAlgorithms = [
     "ssl3-sha1",
     "SHA1",
     "whirlpool",
-];
+].map((a) => a.toLocaleUpperCase());
 const yargs = require("yargs")
     .scriptName("hash")
     .command("$0 [options] <targets..>", "Hash the target files, directories, or strings", (y) => {
         y.options({
             "algorithm": {
                 alias: "a",
-                default: "sha256",
+                default: "SHA256",
                 desc: "The hashing algorithm to use",
             },
             "individual": {
@@ -101,7 +101,7 @@ const yargs = require("yargs")
             },
             "string": {
                 alias: "s",
-                desc: "Treat the targets strings and hash them",
+                desc: "Treat the <targets..> as strings instead of files",
                 boolean: true,
                 conflicts: ["individual"],
             },
@@ -110,6 +110,12 @@ const yargs = require("yargs")
                 desc: "Concatenates the input strings as one whole input string",
                 boolean: true,
                 implies: ["string"],
+            },
+            "quiet": {
+                alias: "q",
+                desc: "Prints only the hashes and no other info",
+                boolean: true,
+                default: false,
             }
         }).positional("targets", {
             demandOption: "You must specify a target dir or file",
@@ -125,14 +131,14 @@ const crypto = require("crypto");
 const { basename } = require("path");
 
 (async () => {
-    if (!(hashAlgorithms.includes(args.algorithm))) {
+    if (!(hashAlgorithms.includes(args.algorithm.toLocaleUpperCase()))) {
         yargs.showHelp(console.error);
-        let longestAlgo = hashAlgorithms.reduce((a,b) => a.length > b.length ? a : b).length;
+        let longestAlgo = hashAlgorithms.reduce((a, b) => a.length > b.length ? a : b).length;
         let lines = [];
         let line = "";
-        for(let algo of hashAlgorithms) {
+        for (let algo of hashAlgorithms) {
             algo = algo.padEnd(longestAlgo + 2);
-            if((line + algo).length > yargs.terminalWidth()){
+            if ((line + algo).length > yargs.terminalWidth()) {
                 lines.push(line.trim());
                 line = "";
             }
@@ -141,29 +147,29 @@ const { basename } = require("path");
         console.error(`\nInvalid hash algorithm "${args.algorithm}". Pick one of:\n${lines.join("\n")}`);
         process.exit(1);
     }
-    console.log("Using algorithm: " + args.algorithm);
+    if (!args.quiet) console.log("Using algorithm: " + args.algorithm);
     if (args.string) {
         let input = args.individual ? args.targets : [args.targets.reduce((a, c) => a + c)];
         (await hashStrings(input, args.algorithm)).forEach((hash, idx) => {
-            console.log(`${hash} <= ${input[idx]}`);
+            if (args.quiet) console.log(hash);
+            else console.log(`${input[idx]}\n    ${hash}`);
         })
     } else if (args.individual) {
-        const SPACE_PADDING = 2;
         let files = [];
         if (args.recursive) files = args.targets.map((t) => listFilesRecurse(t)).flat(100);
         else files = args.targets.map((t) => listFiles(t)).flat(100);
         files = files.sort();
-        console.log("Files found: " + files.length);
+        if (!args.quiet) console.log("Files found: " + files.length);
 
         let proms = files.map((f) => hashFiles([f], args.algorithm).then(h => [f, h]));
         proms = proms.map(p => p.then(([f, h]) => console.log(path.basename(f) + ":\n    " + h)));
     } else {
-        console.log(
-            await hashFiles(
-                args.targets.map((t) => listFilesRecurse(t)).flat(100).sort(),
-                args.algorithm
-            )
-        )
+        let hash = await hashFiles(
+            args.targets.map((t) => listFilesRecurse(t)).flat(100).sort(),
+            args.algorithm
+        );
+        if (args.quiet) console.log(hash);
+        else console.log(`${args.targets.join(", ")}\n    ${hash}`)
     }
 })();
 

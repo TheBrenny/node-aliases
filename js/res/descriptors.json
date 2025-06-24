@@ -61,5 +61,6 @@
     "wsadb": "Connects the WSA Android instance with ADB",
     "xor": "XORs a file using the given key",
     "yarn": "Alias to 'npx yarn'",
-    "zen": "Opens the VSCode Zen profile (minimal VSCode)"
+    "zen": "Opens the VSCode Zen profile (minimal VSCode)",
+    "pc": "Alias to 'pwd | clip'"
 }

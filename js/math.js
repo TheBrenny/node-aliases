@@ -1,3 +1,6 @@
+console.error("Unable to be used due to being unsafe.")
+process.exit(1);
+
 if (process.argv.length == 2) {
     console.log("Usage: math <...equation>");
     console.log("  Where equation can be any length of anything that gets piped directly to a JS eval statement. So be careful!");

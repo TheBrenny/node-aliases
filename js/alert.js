@@ -1,6 +1,6 @@
 const notify = require("node-notifier").notify;
 const bossman = require("big-kahuna");
-const history = require("./util").history;
+const history = require("./lib/util").history;
 
 let n = {
     wait: false

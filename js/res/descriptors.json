@@ -40,6 +40,7 @@
     "npup": "Bumps a Node package's version",
     "nt": "Alias to 'nodeterm'",
     "openhere": "Run from a VSCode terminal to reuse the VSCode window",
+    "password": "\u001b[31m ----- NO DESCRIPTION GIVEN! -----\u001b[0m",
     "pc": "Alias to 'pwd | clip'",
     "phpmyadmin": "Spawns a PHPMyAdmin Docker instance to read MySQL databases",
     "pnpmup": "Updates PNPM",
@@ -63,5 +64,5 @@
     "wsadb": "Connects the WSA Android instance with ADB",
     "xor": "XORs a file using the given key",
     "yarn": "Alias to 'npx yarn'",
-    "zen": "Opens the VSCode Zen profile (minimal VSCode)",
+    "zen": "Opens the VSCode Zen profile (minimal VSCode)"
 }

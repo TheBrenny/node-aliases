@@ -128,7 +128,6 @@ const args = yargs.argv;
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { basename } = require("path");
 
 (async () => {
     if (!(hashAlgorithms.includes(args.algorithm.toLocaleUpperCase()))) {

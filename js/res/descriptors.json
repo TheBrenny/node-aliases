@@ -40,6 +40,7 @@
     "notify": "Alias to 'alert'",
     "npup": "Bumps a Node package's version",
     "nt": "Alias to 'nodeterm'",
+    "ntt": "Alias to 'nodeterm' after clearing the screen",
     "openhere": "Run from a VSCode terminal to reuse the VSCode window",
     "password": "Generates a passphrase",
     "pc": "Alias to 'pwd | clip'",

@@ -22,10 +22,6 @@ if (bossman.has("--help", "-h")) {
         "    --guid",
         "    -g",
         "          Generates a GUID formatted token",
-        "    -p",
-        "    --pass",
-        "    --password",
-        "          Generates a (non-crypto) random string of alphanumeric + special chars",
         "    --help",
         "    -h",
         "          Displays this help message",
@@ -56,8 +52,6 @@ if (bossman.weight == 0) {
             result.substring(20)
         ];
         result = result.join("-");
-    } else if (bossman.has("--password", "--pass", "-p")) {
-        result = token(size, (charset.lower + charset.upper + charset.num + charset.symbolssub));
     } else {
         result = token(size);
     }

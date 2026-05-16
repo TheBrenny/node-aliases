@@ -91,6 +91,12 @@ const all = {
             desc: "wraps negative values: \"23456\""
         }
     ],
+    "numbers": [
+        {
+            name: "(1.2345).toFixed(2)",
+            desc: "rounds to 2 decimal places"
+        }
+    ],
     "node": [
         {
             name: "require.main === module",

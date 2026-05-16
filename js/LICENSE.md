@@ -1,1 +1,1 @@
-Copyright (C) Jarod Brennfleck 2020
+Copyright (C) Jarod Brennfleck 2026

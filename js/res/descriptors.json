@@ -1,4 +1,4 @@
-{
+{    
     "alert": "Creates a toast notifcation alert",
     "alias": "Creates, edits, or lists aliases",
     "base64": "Converts strings between ascii and base64",
@@ -10,6 +10,7 @@
     "clear": "Alias to 'cls'",
     "cp": "Alias to 'copy'",
     "dig": "Alias to 'wsl dig'",
+    "download": "Downloads a record with parallel connections for speed",
     "explore": "Opens the Windows Explorer",
     "file": "Alias to 'wsl file'",
     "ga": "Alias to 'git add'",
@@ -40,7 +41,7 @@
     "npup": "Bumps a Node package's version",
     "nt": "Alias to 'nodeterm'",
     "openhere": "Run from a VSCode terminal to reuse the VSCode window",
-    "password": "\u001b[31m ----- NO DESCRIPTION GIVEN! -----\u001b[0m",
+    "password": "Generates a passphrase",
     "pc": "Alias to 'pwd | clip'",
     "phpmyadmin": "Spawns a PHPMyAdmin Docker instance to read MySQL databases",
     "pnpmup": "Updates PNPM",

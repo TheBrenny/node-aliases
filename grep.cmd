@@ -1,1 +1,1 @@
-@wsl grep %*
+@wsl grep --color=always %*
